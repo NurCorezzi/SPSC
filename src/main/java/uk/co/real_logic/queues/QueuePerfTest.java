@@ -15,6 +15,8 @@
  */
 package uk.co.real_logic.queues;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Queue;
 
 
@@ -38,7 +40,14 @@ public class QueuePerfTest {
 		for(int i = 10; i < 20; i++){
 		    sum+=results[i];
 		}
-		System.out.format("summary,QueuePerfTest,%s,%d\n", queue.getClass().getSimpleName(), sum/10);
+		System.out.format("summary,QueuePerfTest,%s,%d\n", queue.getClass().getSimpleName(), sum / 10);
+
+		File csv = new File(String.format("data/%s/%s.csv", args[1], queue.getClass().getSimpleName()));
+		System.out.println(csv.getAbsolutePath());
+		csv.createNewFile();
+		FileOutputStream output = new FileOutputStream(csv, true); 
+		output.write(String.format("%d,\n", sum / 10).getBytes());
+		output.close();
 	}
 
 

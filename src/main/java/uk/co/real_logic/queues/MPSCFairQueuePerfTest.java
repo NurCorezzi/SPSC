@@ -27,12 +27,9 @@ public class MPSCFairQueuePerfTest {
 	        * ((Integer.getInteger("reps", 10) * 1000 * 1000) / PRODUCERS);
 	public static final Integer TEST_VALUE = Integer.valueOf(777);
 	private static final Comparator<Producer> START_TIME_COMPARATOR = new Comparator<Producer>() {
-
-		@Override
 		public int compare(Producer o1, Producer o2) {
 			return (int) (o2.start - o1.start);
 		}
-
 	};
 	private static final int ITERATIONS = 14;
 

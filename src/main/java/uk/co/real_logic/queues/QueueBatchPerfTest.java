@@ -15,6 +15,8 @@
  */
 package uk.co.real_logic.queues;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Queue;
 
 import psy.lob.saw.queues.spsc9.SPSCQueue9;
@@ -40,12 +42,12 @@ public class QueueBatchPerfTest {
 		for(int i = 10; i < 20; i++){
 		    sum+=results[i];
 		}
+	
 		System.out.format("summary,QueueBatchPerfTest,%s,%d\n", queue.getClass().getSimpleName(), sum/10);
 	}
 
     static Integer result;
     static SPSCQueue9.Processor<Integer> processor = new SPSCQueue9.Processor<Integer>() {
-        @Override
         public void process(Integer e) {
             result = e;
         }
