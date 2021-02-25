@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODES=('cc' 'sc')
+MODES=('sc')
 IMPLS=(1 2 3 31 32 33 34 8 9)
 RUNS=10
 
