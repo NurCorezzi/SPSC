@@ -6,15 +6,37 @@ output:
 
 #Definir JSONS
 ```{r}
+library(ggplot2)
+library(magrittr)
+library(dplyr)
+
+
 readCsv <- function(x) {
     result <- read.csv(file = paste('./cc/', x, sep = ''))
 }
 
+toFrame <- function(cc, q_name) {
+  tmp <- 1:nrow(v)
+  for (i in 1:nrow(v)) tmp = q_name
+
+  v <- data.frame(cc)[1]
+  v <- data.frame(1:nrow(v), v, tmp)
+  colnames(v) <- c('x', 'y', 'queue')
+  result <- v
+}
+
 cc_file_names = list.files(path="./cc", pattern="*.csv")
 cc <- lapply(cc_file_names, readCsv)
+cc_tmp <- read.csv(text="x, y, queue")
 
-cc_file_names
-cc
+for (i in 1:length(cc)) {
+  cc_tmp <- rbind(cc_tmp, toFrame(cc[i], cc_file_names[i]))
+}
+
+cc_tmp$y <- cc_tmp$y / 1000000 
+
+#scale_x_discrete(labels= c('iteration', 'ops/sec', 'queue'))
+ggplot(data.frame(cc_tmp), aes(x = x, y = y)) + geom_line(aes(colour = queue)) + xlab('iteration') + ylab('milhões ops/sec') + scale_x_continuous(breaks = round(seq(min(cc_tmp$x), max(cc_tmp$x), by = 1),1))
 
 ```
 
