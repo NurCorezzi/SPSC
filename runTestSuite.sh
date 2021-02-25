@@ -1,8 +1,8 @@
 #!/bin/bash
 
 MODES=('cc' 'sc')
-IMPLS=(3 8)
-RUNS=3
+IMPLS=(1 2 3 31 32 33 34 8 9)
+RUNS=10
 
 ITERATIONS=$(( $RUNS * ${#IMPLS[@]} * ${#MODES[@]}))
 IT=0
