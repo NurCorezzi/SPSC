@@ -1,5 +1,6 @@
-QUEUE=3
-MODE=cc
+QUEUE=9
+MODE=sc
+OPTS=-Daffinity.reserved=F0
 
 all:
 	./runTestSuite.sh
@@ -8,11 +9,16 @@ mvn:
 	mvn clean install
 
 cc:
-	taskset -c 0,3 ${JAVA_HOME}/bin/java -cp "./target/classes" uk.co.real_logic.queues.QueuePerfTest ${QUEUE} cc
+	${JAVA_HOME}/bin/java ${OPTS} -cp ./target/examples-1.0-SNAPSHOT-jar-with-dependencies.jar uk.co.real_logic.queues.QueuePerfTestAffinity ${QUEUE} cc
+#	taskset -c 2,4 ${JAVA_HOME}/bin/java -cp "./target/classes" uk.co.real_logic.queues.QueuePerfTest ${QUEUE} cc
+
 sc:
-	taskset -c 1   ${JAVA_HOME}/bin/java -cp "./target/classes" uk.co.real_logic.queues.QueuePerfTest ${QUEUE} sc
+	${JAVA_HOME}/bin/java ${OPTS} -cp ./target/examples-1.0-SNAPSHOT-jar-with-dependencies.jar uk.co.real_logic.queues.QueuePerfTestAffinity ${QUEUE} sc
+#	taskset -c 2   ${JAVA_HOME}/bin/java -cp "./target/classes" uk.co.real_logic.queues.QueuePerfTest ${QUEUE} sc
+
 cs:
-	taskset -c 0,3 ${JAVA_HOME}/bin/java -cp "./target/classes" uk.co.real_logic.queues.QueuePerfTest ${QUEUE} cs
+	${JAVA_HOME}/bin/java ${OPTS} -cp ./target/examples-1.0-SNAPSHOT-jar-with-dependencies.jar uk.co.real_logic.queues.QueuePerfTestAffinity ${QUEUE} cs
+#	taskset -c 2,4 ${JAVA_HOME}/bin/java -cp "./target/classes" uk.co.real_logic.queues.QueuePerfTest ${QUEUE} cs
 
 
 #COMPILATION ETC
@@ -21,7 +27,7 @@ c:
 	javac -d "./target/classes" -cp "./src/main/java" -Xlint:unchecked src/main/java/uk/co/real_logic/queues/QueuePerfTest.java
 
 r:
-	sudo perf stat -d -d -v ${JAVA_HOME}/bin/java -cp ./target/examples-1.0-SNAPSHOT-jar-with-dependencies.jar uk.co.real_logic.queues.QueuePerfTestAffinity ${QUEUE} ${MODE}
+	sudo perf stat -d -d -v ${JAVA_HOME}/bin/java ${OPTS} -cp ./target/examples-1.0-SNAPSHOT-jar-with-dependencies.jar uk.co.real_logic.queues.QueuePerfTestAffinity ${QUEUE} ${MODE}
 #	${JAVA_HOME}/bin/java -cp "./target/classes" uk.co.real_logic.queues.QueuePerfTestAffinity ${QUEUE} ${MODE}
 
 perf:
