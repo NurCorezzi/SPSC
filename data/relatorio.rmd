@@ -36,6 +36,7 @@ for (i in 1:length(cc)) {
 
 cc_tmp$y <- cc_tmp$y / 1000000 
 
+
 #scale_x_discrete(labels= c('iteration', 'ops/sec', 'queue'))
 ggplot(data.frame(cc_tmp), aes(x = x, y = y)) + geom_line(aes(colour = queue)) + xlab('iteration') + ylab('million ops/sec') + scale_x_continuous(breaks = round(seq(min(cc_tmp$x), max(cc_tmp$x), by = 1),1)) + scale_y_continuous(breaks = round(seq(0, max(cc_tmp$y) + 20, by = 20),0)) + ggtitle('Cross Core')
 

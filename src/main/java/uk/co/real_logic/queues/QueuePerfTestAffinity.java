@@ -19,8 +19,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Queue;
 
+import net.openhft.affinity.AffinityLock;
+import net.openhft.affinity.AffinityStrategies;
 
-public class QueuePerfTest {
+
+public class QueuePerfTestAffinity {
 	// 15 == 32 * 1024
 	public static final int QUEUE_CAPACITY = 1 << Integer.getInteger("scale", 15);
 	public static final int REPETITIONS = Integer.getInteger("reps", 50) * 1000 * 1000;
@@ -49,39 +52,66 @@ public class QueuePerfTest {
 		output.write(String.format("%d,\n", sum / 10).getBytes());
 		output.close();
 	}
-
-
+	
 	private static long performanceRun(final int runNumber, final Queue<Integer> queue) throws Exception {
+		AffinityLock al = AffinityLock.acquireCore();
 		final long start = System.nanoTime();
-        final Thread thread = new Thread(new Producer(queue));
-        thread.start();
-        
-		Integer result;
-		int i = REPETITIONS;
-		do {
-			while (null == (result = queue.poll())) {
-				Thread.yield();
-			}
-		} while (0 != --i);
 
-		thread.join();
+		AffinityLock plock = al.acquireLock(AffinityStrategies.SAME_CORE);
+		final Thread producer = new Thread(new Producer(queue, plock));
+		producer.start();
+
+        AffinityLock clock = al.acquireLock(AffinityStrategies.SAME_CORE);
+		final Thread consumer = new Thread(new Consumer(queue, clock));
+		consumer.start();
+		
+		System.out.format("mid:%d | pid:%d | cid:%d - ", al.cpuId(), plock.cpuId(), clock.cpuId());
+		producer.join();
+		consumer.join();
+		plock.release();
+		clock.release();
+		al.release();
 		
 		final long duration = System.nanoTime() - start;
 		final long ops = (REPETITIONS * 1000L * 1000L * 1000L) / duration;
-		System.out.format("%d - ops/sec=%,d - %s result=%d\n", Integer
+		System.out.format("%d - ops/sec=%,d - %s\n", Integer
 		        .valueOf(runNumber), Long.valueOf(ops), queue.getClass()
-		        .getSimpleName(), result);
+		        .getSimpleName());
 		return ops;
 	}
-
-	public static class Producer implements Runnable {
+	
+	public static class Consumer implements Runnable {
+		private final AffinityLock al;
 		private final Queue<Integer> queue;
         
-		public Producer(final Queue<Integer> queue) {
+		public Consumer(final Queue<Integer> queue, AffinityLock al) {
 			this.queue = queue;
+			this.al = al;
 		}
 
 		public void run() {
+			al.bind();
+			Integer result;
+			int i = REPETITIONS;
+			do {
+				while (null == (result = queue.poll())) {
+					Thread.yield();
+				}
+			} while (0 != --i);
+		}
+	}
+
+	public static class Producer implements Runnable {
+		private final AffinityLock al;
+		private final Queue<Integer> queue;
+        
+		public Producer(final Queue<Integer> queue, AffinityLock al) {
+			this.queue = queue;
+			this.al = al;
+		}
+
+		public void run() {
+			al.bind();
 			int i = REPETITIONS;
 			do {
 				while (!queue.offer(TEST_VALUE)) {
