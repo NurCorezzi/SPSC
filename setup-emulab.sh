@@ -1,5 +1,9 @@
 #!/bin/bash
 sudo apt-get update
-sudo apt-get install openjdk-8-jdk
+sudo apt-get -y install openjdk-8-jdk
+sudo apt-get -y install maven
 setenv JAVA_HOME /usr
-sudo apt-get install maven
+echo $JAVA_HOME
+java -version
+where java
+mvn --version
