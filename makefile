@@ -1,6 +1,6 @@
 QUEUE=9
 MODE=sc
-OPTS=-Daffinity.reserved=F0
+OPTS=-Daffinity.reserved=000F000F
 
 all:
 	./runTestSuite.sh

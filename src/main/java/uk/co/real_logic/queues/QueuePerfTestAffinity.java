@@ -49,9 +49,12 @@ public class QueuePerfTestAffinity {
 		System.out.format("summary,QueuePerfTest,%s,%d\n", queue.getClass().getSimpleName(), sum / 10);
 		
 		File csv = new File(String.format("data/%s/%s.csv", args[1], queue.getClass().getSimpleName()));
-		System.out.println(csv.getAbsolutePath());
+		csv.getParentFile().mkdirs();
 		csv.createNewFile();
 		FileOutputStream output = new FileOutputStream(csv, true); 
+
+		System.out.println(csv.getAbsolutePath());
+		
 		output.write(String.format("%d,\n", sum / 10).getBytes());
 		output.close();
 	}

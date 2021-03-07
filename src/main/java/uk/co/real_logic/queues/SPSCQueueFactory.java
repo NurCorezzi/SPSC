@@ -4,6 +4,9 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.jctools.queues.SpscArrayQueue;
+import org.jctools.queues.atomic.SpscAtomicArrayQueue;
+
 import psy.lob.saw.ff.FFBuffer;
 import psy.lob.saw.ff.FFBufferOrderedArrayReadWrite;
 import psy.lob.saw.ff.FFBufferOrderedArrayWrite;
@@ -112,7 +115,9 @@ public final class SPSCQueueFactory {
         case 961:
             return new FFBufferOrdered31<Integer>(qCapacity,Integer.getInteger("sparse.shift", 2));   
         case 962:
-            return new FFBufferOrdered32<Integer>(qCapacity);   
+            return new FFBufferOrdered32<Integer>(qCapacity);
+        case 10:
+        	return new SpscArrayQueue<Integer>(qCapacity);
         default:
             throw new IllegalArgumentException("Invalid option: " + qId);
         }
