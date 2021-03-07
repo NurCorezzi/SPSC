@@ -1,12 +1,15 @@
-#!/bin/bash
+#rodar comom "source setup-emulab.sh"
+#perf:
+#sudo apt-get -y install linux-tools-4.4.0-193-generic
 sudo apt-get update
 sudo apt-get -y install openjdk-8-jdk
 sudo apt-get -y install maven
-export JAVA_HOME=/usr
-echo "############## JAVA ################\n\n"
+echo "\n\n############## JAVA ################"
 java -version
-echo "############## MAVEN ################\n\n"
+echo "\n\n############## MAVEN ################"
 mvn --version
-echo "############## JAVA_HOME ################\n\n"
-type -a java
-echo $JAVA_HOME
+echo "\n\n############## JAVA_HOME ################"
+echo "java in" 
+where java
+setenv JAVA_HOME /usr
+echo "JAVA_HOME="$JAVA_HOME
