@@ -62,3 +62,24 @@ sc_tmp$y <- sc_tmp$y / 1000000
 ggplot(data.frame(sc_tmp), aes(x = x, y = y)) + geom_line(aes(colour = queue)) + xlab('iteration') + ylab('million ops/sec') + scale_x_continuous(breaks = round(seq(min(sc_tmp$x), max(sc_tmp$x), by = 1),1)) + scale_y_continuous(breaks = round(seq(0, max(sc_tmp$y) + 20, by = 20),0)) + ggtitle('Single Core')
 
 ```
+
+```{r}
+readCsv <- function(x) {
+    result <- read.csv(file = paste('./cs/', x, sep = ''))
+}
+
+cs_file_names = list.files(path="./cs", pattern="*.csv")
+cs <- lapply(cs_file_names, readCsv)
+cs_tmp <- read.csv(text="x, y, queue")
+
+
+for (i in 1:length(cs)) {
+  cs_tmp <- rbind(cs_tmp, toFrame(cs[i], cs_file_names[i]))
+}
+
+cs_tmp$y <- cs_tmp$y / 1000000 
+
+#scale_x_discrete(labels= c('iteration', 'ops/sec', 'queue'))
+ggplot(data.frame(cs_tmp), aes(x = x, y = y)) + geom_line(aes(colour = queue)) + xlab('iteration') + ylab('million ops/sec') + scale_x_continuous(breaks = round(seq(min(cs_tmp$x), max(cs_tmp$x), by = 1),1)) + scale_y_continuous(breaks = round(seq(0, max(cs_tmp$y) + 20, by = 20),0)) + ggtitle('Cross Socket')
+
+```
