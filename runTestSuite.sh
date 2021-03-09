@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODES=('cc' 'sc')
+MODES=('cc' 'sc' 'cs')
 IMPLS=(1 2 3 31 32 34 8 9)
 #MODES=('cc')
 #IMPLS=(3)

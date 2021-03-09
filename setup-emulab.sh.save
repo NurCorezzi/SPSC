@@ -1,0 +1,21 @@
+		File csv = new File(String.format("data/%s/%s.csv", args[1], queue.getClass().getSimpleName()));
+		csv.getParentFile().mkdirs();
+		csv.createNewFile();
+		FileOutputStream output = new FileOutputStream(csv, true); 
+
+		System.out.println(csv.getAbsolutePath());
+		
+		output.write(String.format("%d,\n", sum / 10).getBytes());
+		output.close();
+
+#!/bin/bash
+sudo apt-get update
+sudo apt-get -y install openjdk-8-jdk
+sudo apt-get -y install maven
+echo "############## JAVA ################\n\n"
+java -version
+echo "############## MAVEN ################\n\n"
+mvn --version
+echo "############## JAVA_HOME ################\n\n"
+type -a java
+echo $JAVA_HOME
